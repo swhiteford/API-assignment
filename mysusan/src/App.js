@@ -1,6 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
+import Temperature from "./components/Temperature";
 
 /*
 App
@@ -16,12 +17,6 @@ App
 -- e.g. state temp in degrees F
 */
 
-// Current Weather API Endpoint
-// http://api.weatherstack.com/current?access_key=366377bccab258eb9800cbc672333e05&query=New%20York
-// http://api.weatherstack.com/current
-//     ? access_key = YOUR_ACCESS_KEY
-//     & query = New York
-
 // // optional parameters:
 
 //     & units = f
@@ -31,16 +26,16 @@ App
 function App() {
   const [input, setInput] = useState("New York");
   const [weather, setWeather] = useState("New York");
+  const [weatherdata,setWeatherdata] = useState([])
 
   const weatherApikey = "f3b74265c9f300ffe539eed2a54a02b5";
-  // const urlforApi = `http://f3b74265c9f300ffe539eed2a54a02b5api.weatherstack.com/current?access_key=${weatherApikey}&query=${input}&units=f`;
-const urlforApi = `https://api.openweathermap.org/data/2.5/weather?q=${weather}&appid=${weatherApikey}&units=metric;`
+  const urlforApi = `https://api.openweathermap.org/data/2.5/weather?q=${weather}&appid=${weatherApikey}&units=metric;`;
 
- 
   async function getWeather(cityName) {
     try {
-      const response = await fetch(url, options);
+      const response = await fetch(urlforApi);
       const result = await response.text();
+      setWeatherdata(result);
       console.log(result);
     } catch (error) {
       console.error(error);
@@ -53,19 +48,10 @@ const urlforApi = `https://api.openweathermap.org/data/2.5/weather?q=${weather}&
 
   // }
 
-  const url =
-    "https://weatherapi-com.p.rapidapi.com/current.json?q=53.1%2C-0.13";
-  const options = {
-    method: "GET",
-    headers: {
-      "X-RapidAPI-Key": "SIGN-UP-FOR-KEY",
-      "X-RapidAPI-Host": "weatherapi-com.p.rapidapi.com",
-    },
-  };
-
   function handleSubmit(e) {
     e.preventDefault();
     getWeather(input);
+    console.log(input);
   }
 
   function handleChange(e) {
@@ -79,6 +65,7 @@ const urlforApi = `https://api.openweathermap.org/data/2.5/weather?q=${weather}&
         <label>City Name (1 to 100 characters):</label>
         <input type="text" id="cityName" size="25" onChange={handleChange} />
         <input type="submit" />
+        <Temperature value = {weatherdata} />
       </form>
     </div>
   );
